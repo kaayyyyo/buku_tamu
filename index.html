@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Tamu DPMPTSP Kota Samarinda</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<form 
+    class="login-container" 
+    id="guest-form" 
+    method="POST" 
+    action="https://docs.google.com/forms/d/e/1FAIpQLSfSnZY7ouhCXkppMBQvXSiP9w2mZi6v4HyhIBPrVaCNlmq4Ow/formResponse" 
+    target="submitFrame"
+>
+
+    <h1>
+        Selamat Datang di Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Kota Samarinda
+    </h1>
+
+    <!-- NAMA LENGKAP -->
+    <div class="input-group">
+        <label for="nama">Nama Lengkap *</label>
+        <input 
+            type="text" 
+            id="nama" 
+            name="entry.1994765778" 
+            placeholder="Masukkan nama lengkap"
+            required
+        >
+    </div>
+
+    <!-- WAKTU KUNJUNGAN -->
+    <div class="input-group">
+        <label>Waktu Kunjungan</label>
+
+        <div class="time-picker" id="time-picker">
+
+            <div class="wheel">
+                <div 
+                    class="wheel-slot" 
+                    id="hour-wheel" 
+                    tabindex="0" 
+                    aria-label="Jam" 
+                    role="listbox">
+                </div>
+            </div>
+
+            <span class="time-separator">:</span>
+
+            <div class="wheel">
+                <div 
+                    class="wheel-slot" 
+                    id="minute-wheel" 
+                    tabindex="0" 
+                    aria-label="Menit" 
+                    role="listbox">
+                </div>
+            </div>
+
+            <input 
+                type="hidden" 
+                id="entry-hour" 
+                name="entry.174173773_hour" 
+                value="08"
+            >
+
+            <input 
+                type="hidden" 
+                id="entry-minute" 
+                name="entry.174173773_minute" 
+                value="00"
+            >
+
+        </div>
+    </div>
+
+    <!-- ASAL INSTANSI -->
+    <div class="input-group">
+        <label for="asal">Asal Instansi/Perusahaan</label>
+        <input 
+            type="text" 
+            id="asal" 
+            name="entry.260225900" 
+            placeholder="Masukkan asal instansi atau perusahaan"
+        >
+    </div>
+
+    <!-- BIDANG / ORANG YANG DITEMUI -->
+    <div class="input-group">
+        <label for="bidang">Bidang/Orang yang Ditemui</label>
+        <input 
+            type="text" 
+            id="bidang" 
+            name="entry.207353417" 
+            placeholder="Masukkan bidang atau orang yang ditemui"
+        >
+    </div>
+
+    <!-- KEPERLUAN -->
+    <div class="input-group">
+        <label for="keperluan">Keperluan</label>
+        <input 
+            type="text" 
+            id="keperluan" 
+            name="entry.XXXXXXXXXX" 
+            placeholder="Masukkan keperluan kunjungan"
+        >
+    </div>
+
+    <!-- JUMLAH ORANG -->
+    <div class="input-group">
+        <label>Jumlah Orang</label>
+
+        <div class="radio-group">
+
+            <label class="radio-option">
+                <input 
+                    type="radio" 
+                    name="entry.1699570348" 
+                    value="1"
+                >
+                <span>1 orang</span>
+            </label>
+
+            <label class="radio-option">
+                <input 
+                    type="radio" 
+                    name="entry.1699570348" 
+                    value="2"
+                >
+                <span>2 orang</span>
+            </label>
+
+            <label class="radio-option">
+                <input 
+                    type="radio" 
+                    name="entry.1699570348" 
+                    value="3"
+                >
+                <span>3 orang</span>
+            </label>
+
+            <label class="radio-option">
+                <input 
+                    type="radio" 
+                    name="entry.1699570348" 
+                    value="4"
+                >
+                <span>4 orang</span>
+            </label>
+
+            <label class="radio-option">
+                <input 
+                    type="radio" 
+                    name="entry.1699570348" 
+                    value="5-10"
+                >
+                <span>5-10 orang</span>
+            </label>
+
+            <label class="radio-option">
+                <input 
+                    type="radio" 
+                    name="entry.1699570348" 
+                    value=">10"
+                >
+                <span>&gt;10 orang</span>
+            </label>
+
+        </div>
+    </div>
+
+    <button type="submit">KIRIM</button>
+
+</form>
+
+<!-- IFRAME UNTUK SUBMIT GOOGLE FORM -->
+<iframe name="submitFrame" style="display:none;"></iframe>
+
+<script>
+    const form = document.getElementById('guest-form');
+
+    const hourWheel = document.getElementById('hour-wheel');
+    const minuteWheel = document.getElementById('minute-wheel');
+
+    const entryHour = document.getElementById('entry-hour');
+    const entryMinute = document.getElementById('entry-minute');
+
+    function pad(value) {
+        return String(value).padStart(2, '0');
+    }
+
+    function createItems(container, count) {
+
+        for (let i = 0; i < count; i++) {
+
+            const item = document.createElement('div');
+
+            item.className = 'wheel-item';
+            item.textContent = pad(i);
+            item.dataset.value = pad(i);
+
+            container.appendChild(item);
+        }
+    }
+
+    function updateHiddenValue() {
+
+        const selectedHour =
+            hourWheel.querySelector('.wheel-item.active');
+
+        const selectedMinute =
+            minuteWheel.querySelector('.wheel-item.active');
+
+        if (selectedHour && selectedMinute) {
+
+            entryHour.value =
+                selectedHour.dataset.value;
+
+            entryMinute.value =
+                selectedMinute.dataset.value;
+        }
+    }
+
+    function selectItem(container, index) {
+
+        const items =
+            container.querySelectorAll('.wheel-item');
+
+        items.forEach(item =>
+            item.classList.remove('active')
+        );
+
+        const selected = items[index];
+
+        if (selected) {
+
+            selected.classList.add('active');
+
+            selected.scrollIntoView({
+                block: 'center',
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    function bindWheel(container, defaultIndex) {
+
+        const items =
+            container.querySelectorAll('.wheel-item');
+
+        items.forEach((item, index) => {
+
+            item.addEventListener('click', () => {
+
+                selectItem(container, index);
+
+                updateHiddenValue();
+
+            });
+
+        });
+
+        selectItem(container, defaultIndex);
+    }
+
+    function setSubmitTime() {
+
+        const now = new Date();
+
+        entryHour.value =
+            pad(now.getHours());
+
+        entryMinute.value =
+            pad(now.getMinutes());
+
+        selectItem(
+            hourWheel,
+            now.getHours()
+        );
+
+        selectItem(
+            minuteWheel,
+            now.getMinutes()
+        );
+    }
+
+    // Membuat pilihan jam dan menit
+    createItems(hourWheel, 24);
+    createItems(minuteWheel, 60);
+
+    // Default waktu
+    bindWheel(hourWheel, 8);
+    bindWheel(minuteWheel, 0);
+
+    updateHiddenValue();
+
+    // Saat form dikirim
+    form.addEventListener('submit', () => {
+
+        setSubmitTime();
+
+        updateHiddenValue();
+
+        setTimeout(() => {
+
+            window.location.href =
+                'selesai.html';
+
+        }, 300);
+
+    });
+
+</script>
+
+</body>
+</html>
