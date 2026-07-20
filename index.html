@@ -14,9 +14,6 @@
 <form
     class="login-container"
     id="guest-form"
-    method="POST"
-    action="https://docs.google.com/forms/d/e/1FAIpQLSfSnZY7ouhCXkppMBQvXSiP9w2mZi6v4HyhIBPrVaCNlmq4Ow/formResponse"
-    target="submitFrame"
 >
 
     <h1>
@@ -24,7 +21,7 @@
     </h1>
 
 
-    <!-- NAMA LENGKAP -->
+    <!-- NAMA -->
     <div class="input-group">
 
         <label for="nama">
@@ -49,19 +46,14 @@
             Waktu Kunjungan
         </label>
 
-        <div class="time-picker" id="time-picker">
+        <div class="time-picker">
 
             <!-- JAM -->
             <div class="wheel">
-
                 <div
                     class="wheel-slot"
-                    id="hour-wheel"
-                    tabindex="0"
-                    aria-label="Jam"
-                    role="listbox">
+                    id="hour-wheel">
                 </div>
-
             </div>
 
 
@@ -72,28 +64,18 @@
 
             <!-- MENIT -->
             <div class="wheel">
-
                 <div
                     class="wheel-slot"
-                    id="minute-wheel"
-                    tabindex="0"
-                    aria-label="Menit"
-                    role="listbox">
+                    id="minute-wheel">
                 </div>
-
             </div>
 
 
-            <!--
-                FORMAT WAKTU GOOGLE FORM
-                Contoh: 09:30
-            -->
-
+            <!-- WAKTU UNTUK GOOGLE FORM -->
             <input
                 type="hidden"
                 id="entry-time"
                 name="entry.174173773"
-                value="08:00"
             >
 
         </div>
@@ -159,16 +141,17 @@
             Jumlah Orang
         </label>
 
+
         <div class="radio-group">
 
 
-            <!-- 1 ORANG -->
             <label class="radio-option">
 
                 <input
                     type="radio"
                     name="entry.1699570348"
                     value="1 orang"
+                    required
                 >
 
                 <span>
@@ -178,7 +161,6 @@
             </label>
 
 
-            <!-- 2 ORANG -->
             <label class="radio-option">
 
                 <input
@@ -194,7 +176,6 @@
             </label>
 
 
-            <!-- 3 ORANG -->
             <label class="radio-option">
 
                 <input
@@ -210,7 +191,6 @@
             </label>
 
 
-            <!-- 4 ORANG -->
             <label class="radio-option">
 
                 <input
@@ -226,7 +206,6 @@
             </label>
 
 
-            <!-- 5 - 10 ORANG -->
             <label class="radio-option">
 
                 <input
@@ -242,7 +221,6 @@
             </label>
 
 
-            <!-- LEBIH DARI 10 ORANG -->
             <label class="radio-option">
 
                 <input
@@ -265,7 +243,10 @@
 
     <!-- TOMBOL KIRIM -->
 
-    <button type="submit">
+    <button
+        type="submit"
+        id="submit-button"
+    >
         KIRIM
     </button>
 
@@ -273,79 +254,106 @@
 </form>
 
 
-<!--
-    IFRAME TERSEMBUNYI
-
-    Google Form akan dikirim ke iframe
-    sehingga pengguna tidak berpindah
-    ke halaman Google Form
--->
-
-<iframe
-    name="submitFrame"
-    id="submitFrame"
-    style="display:none;">
-</iframe>
-
-
 
 <script>
 
-    /* ================================
-       MENGAMBIL ELEMENT HTML
-    ================================= */
+    /* =====================================
+       ELEMENT
+    ===================================== */
 
     const form =
-        document.getElementById('guest-form');
+        document.getElementById(
+            'guest-form'
+        );
+
 
     const hourWheel =
-        document.getElementById('hour-wheel');
+        document.getElementById(
+            'hour-wheel'
+        );
+
 
     const minuteWheel =
-        document.getElementById('minute-wheel');
+        document.getElementById(
+            'minute-wheel'
+        );
+
 
     const entryTime =
-        document.getElementById('entry-time');
+        document.getElementById(
+            'entry-time'
+        );
+
+
+    const submitButton =
+        document.getElementById(
+            'submit-button'
+        );
 
 
 
-    /* ================================
-       FORMAT ANGKA MENJADI 2 DIGIT
+    /* =====================================
+       GOOGLE FORM URL
+    ===================================== */
 
-       8  -> 08
-       9  -> 09
-       10 -> 10
-    ================================= */
+    const GOOGLE_FORM_URL =
+
+        'https://docs.google.com/forms/d/e/1FAIpQLSfSnZY7ouhCXkppMBQvXSiP9w2mZi6v4HyhIBPrVaCNlmq4Ow/formResponse';
+
+
+
+    /* =====================================
+       FORMAT 2 DIGIT
+    ===================================== */
 
     function pad(value) {
 
-        return String(value).padStart(2, '0');
+        return String(value)
+            .padStart(
+                2,
+                '0'
+            );
 
     }
 
 
 
-    /* ================================
-       MEMBUAT ITEM JAM DAN MENIT
-    ================================= */
+    /* =====================================
+       BUAT ITEM JAM / MENIT
+    ===================================== */
 
-    function createItems(container, count) {
+    function createItems(
+        container,
+        count
+    ) {
 
-        for (let i = 0; i < count; i++) {
+        for (
+            let i = 0;
+            i < count;
+            i++
+        ) {
 
             const item =
-                document.createElement('div');
+                document.createElement(
+                    'div'
+                );
+
 
             item.className =
                 'wheel-item';
 
+
             item.textContent =
                 pad(i);
+
 
             item.dataset.value =
                 pad(i);
 
-            container.appendChild(item);
+
+            container.appendChild(
+                item
+            );
 
         }
 
@@ -353,55 +361,13 @@
 
 
 
-    /* ================================
-       UPDATE WAKTU UNTUK GOOGLE FORM
-
-       FORMAT:
-       HH:MM
-
-       Contoh:
-       09:30
-    ================================= */
-
-    function updateHiddenValue() {
-
-        const selectedHour =
-            hourWheel.querySelector(
-                '.wheel-item.active'
-            );
-
-        const selectedMinute =
-            minuteWheel.querySelector(
-                '.wheel-item.active'
-            );
-
-
-        if (
-            selectedHour &&
-            selectedMinute
-        ) {
-
-            entryTime.value =
-                selectedHour.dataset.value
-                +
-                ':'
-                +
-                selectedMinute.dataset.value;
-
-        }
-
-    }
-
-
-
-    /* ================================
-       MEMILIH ITEM JAM / MENIT
-    ================================= */
+    /* =====================================
+       PILIH ITEM
+    ===================================== */
 
     function selectItem(
         container,
-        index,
-        smooth = true
+        index
     ) {
 
         const items =
@@ -411,34 +377,82 @@
 
 
         items.forEach(
+
             item =>
+
                 item.classList.remove(
                     'active'
                 )
+
         );
 
 
-        const selected =
-            items[index];
+        if (items[index]) {
+
+            items[index]
+                .classList.add(
+                    'active'
+                );
 
 
-        if (selected) {
+            items[index]
+                .scrollIntoView({
 
-            selected.classList.add(
-                'active'
-            );
+                    block:
+                        'center',
+
+                    behavior:
+                        'smooth'
+
+                });
+
+        }
 
 
-            selected.scrollIntoView({
+        updateTime();
 
-                block: 'center',
+    }
 
-                behavior:
-                    smooth
-                    ? 'smooth'
-                    : 'auto'
 
-            });
+
+    /* =====================================
+       UPDATE WAKTU
+    ===================================== */
+
+    function updateTime() {
+
+        const hour =
+
+            hourWheel
+                .querySelector(
+                    '.wheel-item.active'
+                );
+
+
+        const minute =
+
+            minuteWheel
+                .querySelector(
+                    '.wheel-item.active'
+                );
+
+
+        if (
+            hour &&
+            minute
+        ) {
+
+            entryTime.value =
+
+                hour.dataset.value
+
+                +
+
+                ':'
+
+                +
+
+                minute.dataset.value;
 
         }
 
@@ -446,109 +460,62 @@
 
 
 
-    /* ================================
-       EVENT KLIK WHEEL
-    ================================= */
+    /* =====================================
+       EVENT WHEEL
+    ===================================== */
 
     function bindWheel(
-        container,
-        defaultIndex
+        container
     ) {
 
         const items =
-            container.querySelectorAll(
-                '.wheel-item'
-            );
+
+            container
+                .querySelectorAll(
+                    '.wheel-item'
+                );
 
 
         items.forEach(
-            (item, index) => {
+
+            (
+                item,
+                index
+            ) => {
+
 
                 item.addEventListener(
+
                     'click',
-                    () => {
+
+                    function () {
+
 
                         selectItem(
+
                             container,
+
                             index
+
                         );
 
-                        updateHiddenValue();
 
                     }
+
                 );
 
+
             }
-        );
 
-
-        selectItem(
-            container,
-            defaultIndex,
-            false
         );
 
     }
 
 
 
-    /* ================================
-       SET WAKTU OTOMATIS
-
-       Saat pengunjung menekan KIRIM,
-       waktu akan mengikuti waktu
-       perangkat saat itu.
-    ================================= */
-
-    function setSubmitTime() {
-
-        const now =
-            new Date();
-
-
-        const hour =
-            pad(
-                now.getHours()
-            );
-
-
-        const minute =
-            pad(
-                now.getMinutes()
-            );
-
-
-        entryTime.value =
-            hour
-            +
-            ':'
-            +
-            minute;
-
-
-        selectItem(
-            hourWheel,
-            now.getHours(),
-            false
-        );
-
-
-        selectItem(
-            minuteWheel,
-            now.getMinutes(),
-            false
-        );
-
-    }
-
-
-
-    /* ================================
-       MEMBUAT WHEEL
-
-       JAM   : 00 - 23
-       MENIT : 00 - 59
-    ================================= */
+    /* =====================================
+       BUAT JAM & MENIT
+    ===================================== */
 
     createItems(
         hourWheel,
@@ -562,65 +529,205 @@
     );
 
 
+    bindWheel(
+        hourWheel
+    );
 
-    /* ================================
-       WAKTU DEFAULT
-
-       Jam   : 08
-       Menit : 00
-    ================================= */
 
     bindWheel(
+        minuteWheel
+    );
+
+
+
+    /* =====================================
+       SET WAKTU SEKARANG
+    ===================================== */
+
+    const now =
+        new Date();
+
+
+    selectItem(
+
         hourWheel,
-        8
+
+        now.getHours()
+
     );
 
 
-    bindWheel(
+    selectItem(
+
         minuteWheel,
-        0
+
+        now.getMinutes()
+
     );
 
 
-    updateHiddenValue();
 
-
-
-    /* ================================
-       PROSES SUBMIT
-    ================================= */
+    /* =====================================
+       SUBMIT FORM
+    ===================================== */
 
     form.addEventListener(
+
         'submit',
-        function () {
 
-            /*
-                Ambil waktu saat tombol
-                KIRIM ditekan
-            */
-
-            setSubmitTime();
+        async function (
+            event
+        ) {
 
 
             /*
-                Tunggu Google Form
-                menerima data sebelum
-                pindah halaman
+
+            CEGAH FORM PINDAH
+            KE GOOGLE FORM
+
             */
 
-            setTimeout(
-                function () {
+            event.preventDefault();
 
-                    window.location.href =
-                        'selesai.html';
 
-                },
 
-                1500
+            /*
 
-            );
+            UPDATE WAKTU
+            SAAT KIRIM
+
+            */
+
+            const now =
+                new Date();
+
+
+            entryTime.value =
+
+                pad(
+                    now.getHours()
+                )
+
+                +
+
+                ':'
+
+                +
+
+                pad(
+                    now.getMinutes()
+                );
+
+
+
+            /*
+
+            MATIKAN TOMBOL
+            AGAR TIDAK DOUBLE SUBMIT
+
+            */
+
+            submitButton.disabled =
+                true;
+
+
+            submitButton.textContent =
+                'MENGIRIM...';
+
+
+
+            /*
+
+            AMBIL SEMUA DATA FORM
+
+            */
+
+            const formData =
+
+                new FormData(
+                    form
+                );
+
+
+
+            try {
+
+
+                /*
+
+                KIRIM DATA
+                KE GOOGLE FORM
+
+                */
+
+                await fetch(
+
+                    GOOGLE_FORM_URL,
+
+                    {
+
+                        method:
+                            'POST',
+
+                        mode:
+                            'no-cors',
+
+                        body:
+                            formData
+
+                    }
+
+                );
+
+
+
+                /*
+
+                JIKA REQUEST
+                SUDAH DIKIRIM
+
+                REDIRECT KE
+                SELESAI.HTML
+
+                */
+
+                window.location.href =
+
+                    'selesai.html';
+
+
+            }
+
+            catch (
+                error
+            ) {
+
+
+                console.error(
+                    error
+                );
+
+
+                alert(
+
+                    'Data gagal dikirim. Silakan coba lagi.'
+
+                );
+
+
+                submitButton.disabled =
+                    false;
+
+
+                submitButton.textContent =
+                    'KIRIM';
+
+
+            }
+
 
         }
+
     );
 
 
